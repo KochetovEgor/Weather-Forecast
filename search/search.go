@@ -2,12 +2,16 @@ package search
 
 import (
 	"encoding/json"
+	"errors"
+	"io"
 	"net/http"
 	"net/url"
 )
 
-const baseUrl = "https://api.open-meteo.com/v1/forecast"
+// URL for weather forecast
+const BaseUrl = "https://api.open-meteo.com/v1/forecast"
 
+// Type for decode errors from weather API
 type Error struct {
 	IsError bool `json:"error"`
 	Reason  string
@@ -17,24 +21,31 @@ func (err Error) Error() string {
 	return err.Reason
 }
 
+// Type for API's response JSON unmarshaling
 type Weather struct {
 	Daily Daily
 }
 
+// Result of JSON demarshaling. Contains various data about weather
 type Daily struct {
 	Time    []string
 	TempMin []float64 `json:"temperature_2m_min"`
 	TempMax []float64 `json:"temperature_2m_max"`
 }
 
+// Receives URL query parameters for weather API.
+// Returns type Daily that contains forecast data and any error,
+// occured during execution, except io.EOF
 func Forecast(val url.Values) (daily *Daily, err error) {
-	u, err := url.Parse(baseUrl)
+	u, err := url.Parse(BaseUrl)
 	if err != nil {
+		err = errors.New("url.Parse error: " + err.Error())
 		return
 	}
 	u.RawQuery = val.Encode()
 	r, err := http.Get(u.String())
 	if err != nil {
+		err = errors.New("http.Get error: " + err.Error())
 		return
 	}
 	defer r.Body.Close()
@@ -42,16 +53,19 @@ func Forecast(val url.Values) (daily *Daily, err error) {
 		var e Error
 		err = json.NewDecoder(r.Body).Decode(&e)
 		if err != nil {
+			err = errors.New("JSON decoding for BAD REQUEST error: " + err.Error())
 			return
 		}
-		err = e
+		err = errors.New("BAD REQUEST error: " + e.Error())
 		return
 	}
 	var W Weather
 	err = json.NewDecoder(r.Body).Decode(&W)
-	if err != nil {
+	if err != nil && err != io.EOF {
+		err = errors.New("JSON decoding error: " + err.Error())
 		return
 	}
 	daily = &W.Daily
+	err = nil
 	return
 }

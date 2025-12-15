@@ -2,6 +2,7 @@ package app
 
 import (
 	"WeatherForecast/search"
+	"WeatherForecast/sheets"
 	"fmt"
 	"net/http"
 )
@@ -16,10 +17,15 @@ func forecastPost(w http.ResponseWriter, r *http.Request) {
 	daily, err := search.Forecast(val)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintln(w, err, "help")
+		fmt.Fprintln(w, err)
 		return
 	}
-	fmt.Fprintln(w, daily)
+	err = sheets.GetForecastPage(w, *daily)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "Invalid response from weather API: %v\n", err)
+		return
+	}
 }
 
 func forecastGet(w http.ResponseWriter, r *http.Request) {

@@ -5,6 +5,7 @@ import (
 	"net/url"
 )
 
+// URL query parameters for weather API
 var Params = [...]string{
 	"latitude",
 	"longitude",
@@ -12,6 +13,9 @@ var Params = [...]string{
 	"start_date",
 	"end_date"}
 
+// Reads forms data from http.Request (r.Form.Get) and returns
+// variable of type url.Values that contains URL query parameters for weather API.
+// If an error occurs during form parsing, the result of the function will be nil
 func CreateValues(r *http.Request) (url.Values, error) {
 	val := url.Values{}
 	err := r.ParseForm()

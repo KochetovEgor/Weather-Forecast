@@ -14,11 +14,11 @@
         <tr>
             <th>Дата</th> <th>Минимальная температура</th> <th>Максимальная температура</th>
         </tr>
-        {{- range $i, $date := .Time}}
+        {{- range .All }}
         <tr>
-            <td>{{ $date }}</td>
-            <td class="num">{{ index $.TempMin $i }}</td>
-            <td class="num">{{ index $.TempMax $i }}</td>
+            <td>{{ .Time}}</td>
+            <td class="num">{{ .TempMin }}</td>
+            <td class="num">{{ .TempMax }}</td>
         </tr>
         {{- end}}
     </table>

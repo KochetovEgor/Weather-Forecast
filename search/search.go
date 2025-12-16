@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"iter"
 	"net/http"
 	"net/url"
 )
@@ -31,6 +32,27 @@ type Daily struct {
 	Time    []string
 	TempMin []float64 `json:"temperature_2m_min"`
 	TempMax []float64 `json:"temperature_2m_max"`
+}
+
+func (d *Daily) All() iter.Seq[Day] {
+	return func(yield func(Day) bool) {
+		n := min(len(d.Time), len(d.TempMin), len(d.TempMax))
+		for i := 0; i < n; i++ {
+			if !yield(Day{
+				Time:    d.Time[i],
+				TempMin: d.TempMin[i],
+				TempMax: d.TempMax[i],
+			}) {
+				return
+			}
+		}
+	}
+}
+
+type Day struct {
+	Time    string
+	TempMin float64
+	TempMax float64
 }
 
 // Receives URL query parameters for weather API.

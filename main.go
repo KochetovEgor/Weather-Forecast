@@ -15,6 +15,7 @@ func main() {
 		log.Println(err)
 		log.Fatal("Error loading .env file")
 	}
+	log.Println(".ENV loaded")
 
 	pool, err := database.NewPool(os.Getenv("DATABASE_URL"))
 	if err != nil {
@@ -22,6 +23,7 @@ func main() {
 		log.Fatal("Error creating databse pool")
 	}
 	defer pool.Close()
+	log.Println("Database pool created")
 	db := database.NewDB(pool)
 
 	app := app.New(db)

@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func forecastPost(w http.ResponseWriter, r *http.Request) {
+func (a *App) forecastPost(w http.ResponseWriter, r *http.Request) {
 	val, err := search.CreateValues(r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -28,16 +28,16 @@ func forecastPost(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func forecastGet(w http.ResponseWriter, r *http.Request) {
+func (a *App) forecastGet(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "method GET still in progress...")
 }
 
-func forecast(w http.ResponseWriter, r *http.Request) {
+func (a *App) forecast(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		forecastGet(w, r)
+		a.forecastGet(w, r)
 	case http.MethodPost:
-		forecastPost(w, r)
+		a.forecastPost(w, r)
 	default:
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintln(w, "Unknown HTTP method")

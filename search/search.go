@@ -49,6 +49,7 @@ func (d *Daily) All() iter.Seq[Day] {
 	}
 }
 
+// Item of type Daily
 type Day struct {
 	Time    string
 	TempMin float64

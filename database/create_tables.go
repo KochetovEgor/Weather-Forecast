@@ -2,6 +2,7 @@ package database
 
 import "context"
 
+// SQL request for creating table City
 const tableCity = `
 CREATE TABLE IF NOT EXISTS City
 (Id SERIAL PRIMARY KEY,
@@ -11,6 +12,7 @@ Longitude DECIMAL
 );
 `
 
+// SQL request for creating table Weather
 const tableWeather = `
 CREATE TABLE IF NOT EXISTS Weather
 (Id SERIAL PRIMARY KEY,
@@ -26,13 +28,14 @@ UNIQUE (CityId, Date)
 var tables = [...]string{tableWeather, tableCity}
 
 var cities = [...]City{
-	City{"Москва", 55.7, 37.53},
-	City{"Санкт-Петербург", 59.94, 30.31},
-	City{"Казань", 55.8, 49.11},
-	City{"Новосибирск", 55.0, 82.92},
-	City{"Воронеж", 51.66, 39.2},
+	{"Москва", 55.7, 37.53},
+	{"Санкт-Петербург", 59.94, 30.31},
+	{"Казань", 55.8, 49.11},
+	{"Новосибирск", 55.0, 82.92},
+	{"Воронеж", 51.66, 39.2},
 }
 
+// SQL request for initializing table City
 const initTableCity = `
 INSERT INTO City (Name, Latitude, Longitude)
 SELECT * FROM UNNEST(
@@ -44,6 +47,7 @@ ON CONFLICT (Name)
 DO NOTHING
 `
 
+// Create tables in database
 func (db *DataBase) CreateTables() error {
 	ctx := context.Background()
 	for _, table := range tables {
@@ -55,6 +59,7 @@ func (db *DataBase) CreateTables() error {
 	return nil
 }
 
+// Initialise tables in database
 func (db *DataBase) InitTables() error {
 	ctx := context.Background()
 	names := make([]string, 0, len(cities))

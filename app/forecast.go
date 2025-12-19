@@ -8,7 +8,7 @@ import (
 )
 
 func (a *App) forecastPost(w http.ResponseWriter, r *http.Request) {
-	val, err := search.CreateValues(r)
+	val, err := a.createValues(r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintf(w, "Bad parameters: %v\n", err)

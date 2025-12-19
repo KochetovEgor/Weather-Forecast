@@ -2,6 +2,7 @@ package app
 
 import (
 	"WeatherForecast/database"
+	"WeatherForecast/sheets"
 	"fmt"
 	"log"
 	"net/http"
@@ -16,7 +17,17 @@ func New(db *database.DataBase) *App {
 }
 
 func (a *App) mainPage(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "./pages/index.html")
+	citiesNames, err := a.db.GetNamesOfCities()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "Can't get names of cities from DB: %v", err)
+	}
+	err = sheets.GetMainPage(w, citiesNames)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "Can't execute template: %v\n", err)
+		return
+	}
 }
 
 func (a *App) Run() error {

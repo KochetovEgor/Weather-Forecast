@@ -6,12 +6,6 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type City struct {
-	Name      string
-	Latitude  float64
-	Longitude float64
-}
-
 func NewPool(connString string) (*pgxpool.Pool, error) {
 	ctx := context.Background()
 	cfg, err := pgxpool.ParseConfig(connString)

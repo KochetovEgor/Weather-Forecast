@@ -1,6 +1,7 @@
 package search
 
 import (
+	"WeatherForecast/database"
 	"encoding/json"
 	"errors"
 	"io"
@@ -11,6 +12,14 @@ import (
 
 // URL for weather forecast
 const BaseUrl = "https://api.open-meteo.com/v1/forecast"
+
+// URL query parameters for weather API
+var Params = [...]string{
+	"latitude",
+	"longitude",
+	"daily",
+	"start_date",
+	"end_date"}
 
 // Type for decode errors from weather API
 type Error struct {
@@ -34,11 +43,11 @@ type Daily struct {
 	TempMax []float64 `json:"temperature_2m_max"`
 }
 
-func (d *Daily) All() iter.Seq[Day] {
-	return func(yield func(Day) bool) {
+func (d *Daily) All() iter.Seq[database.Day] {
+	return func(yield func(database.Day) bool) {
 		n := min(len(d.Time), len(d.TempMin), len(d.TempMax))
 		for i := 0; i < n; i++ {
-			if !yield(Day{
+			if !yield(database.Day{
 				Time:    d.Time[i],
 				TempMin: d.TempMin[i],
 				TempMax: d.TempMax[i],
@@ -47,13 +56,6 @@ func (d *Daily) All() iter.Seq[Day] {
 			}
 		}
 	}
-}
-
-// Item of type Daily
-type Day struct {
-	Time    string
-	TempMin float64
-	TempMax float64
 }
 
 // Receives URL query parameters for weather API.

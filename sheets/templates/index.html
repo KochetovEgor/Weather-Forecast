@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Главная страница</title>
+    <style>
+        a:visited {color:blue; text-decoration:none}
+    </style>
 </head>
 <body>
     <form method="post" action="/forecast">
@@ -15,7 +18,9 @@
                 {{- end }}
             </select>
         </p>
+        <a href="/addcity">Добавить новый город</a>
         <br/>
+        <br>
         <p>Начальная дата:</p>
         <input type="date" name="start_date">
         <br/>

@@ -42,3 +42,18 @@ func (db *DataBase) GetCityByName(name string) (City, error) {
 	city, err := pgx.CollectOneRow(rows, pgx.RowToStructByName[City])
 	return city, err
 }
+
+const addCity = `
+INSERT INTO City (name, latitude, longitude)
+VALUES ($1, $2, $3)
+ON CONFLICT (name)
+DO UPDATE SET
+	latitude = EXCLUDED.latitude,
+	longitude = EXCLUDED.longitude
+`
+
+func (db *DataBase) AddCity(city City) error {
+	ctx := context.Background()
+	_, err := db.pool.Exec(ctx, addCity, city.Name, city.Latitude, city.Longitude)
+	return err
+}

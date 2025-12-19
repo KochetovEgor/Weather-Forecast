@@ -20,12 +20,12 @@ CityId INTEGER,
 Date DATE NOT NULL,
 MinTemp DECIMAL,
 MaxTemp DECIMAL,
-FOREIGN KEY (CityId) REFERENCES City (Id),
+FOREIGN KEY (CityId) REFERENCES City (Id) ON DELETE CASCADE,
 UNIQUE (CityId, Date)
 );
 `
 
-var tables = [...]string{tableWeather, tableCity}
+var tables = [...]string{tableCity, tableWeather}
 
 var cities = [...]City{
 	{"Москва", 55.7, 37.53},

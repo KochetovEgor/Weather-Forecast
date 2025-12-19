@@ -45,6 +45,7 @@ func (a *App) Run() error {
 
 	http.HandleFunc("/", a.mainPage)
 	http.HandleFunc("/forecast", a.forecast)
+	http.HandleFunc("/addcity", a.addCity)
 	err = http.ListenAndServe("localhost:8000", nil)
 	if err != nil {
 		return fmt.Errorf("server error: %v", err)

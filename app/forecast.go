@@ -43,3 +43,35 @@ func (a *App) forecast(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "Unknown HTTP method")
 	}
 }
+
+func (a *App) addCity(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		city, err := a.parseCity(r)
+		if err != errEmptyCity {
+			if err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				fmt.Fprintf(w, "bad request: %v\n", err)
+				return
+			}
+			err = a.db.AddCity(city)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				fmt.Fprintf(w, "Can't add city to DB: %v\n", err)
+				return
+			}
+		}
+	}
+
+	cities, err := a.db.GetCities()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "Can't get cities from DB: %v\n", err)
+		return
+	}
+	err = sheets.GetAddCityPage(w, cities)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "Can't execute template: %v\n", err)
+		return
+	}
+}

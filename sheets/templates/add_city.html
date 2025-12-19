@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить город</title>
+    <style>
+        a:visited {color:blue; text-decoration:none}
+    </style>
+</head>
+<body>
+    <a href="/">Вернуться на главную страницу</a>
+    <br>
+    <br>
+    <div>Добавить новый город:</div>
+    <form method="post" action="/addcity">
+        <p>Название города:</p>
+        <input type="text" name="name">
+        <br>
+        <p>Ширина:</p>
+        <input type="text" name="latitude">
+        <br>
+        <p>Долгота:</p>
+        <input type="text" name="longitude">
+        <br>
+        <input type="submit" value="Отправить">
+    </form>
+
+    <br>
+    <br>
+    <div>Список текущих городов:</div>
+    <br>
+    <table>
+        <tr>
+            <th>Название</th> <th>Ширина</th> <th>Долгота</th>
+        </tr>
+        {{- range . }}
+        <tr>
+            <td>{{ .Name }}</td>
+            <td>{{ .Latitude }}</td>
+            <td>{{ .Longitude }}</td>
+        </tr>
+        {{- end }}
+    </table>
+</body>
